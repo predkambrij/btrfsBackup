@@ -65,9 +65,10 @@ function incremental_send() {
         cat "/ssd/"$subvol"_"$frequency"_list" | head -n 1 > "/1t/"$subvol"_"$frequency"_last_time"
         # remove first line of the list
         sed -i -e "1d" "/ssd/"$subvol"_"$frequency"_list"
+        echo "$parent" >> "/ssd/"$subvol"_"$frequency"_toremove"
     fi
 }
-
+echo "snapshots to transfer:$(cat "/ssd/"$subvol"_"$frequency"_list"|wc -l)"
 cat "/ssd/"$subvol"_"$frequency"_list" | while read next_snapshot; do
     echo snapshot $next_snapshot
     incremental_send $next_snapshot
