@@ -1,7 +1,6 @@
 echo "Locations of root btrfs:: ssd: /ssd & 1t: /1t ok?";read
 
 # subvolume
-
 if [ "$1" == "@" ];then
     subvol="$1"
 elif [ "$1" == "@home" ];then
@@ -31,15 +30,6 @@ function verbose_btrfs() {
 # go to the root of the filesystem
 cd /ssd
 
-# init send just at the first time
-# cat @_manual_latest 
-# @_manual_snapshot_ro_2014-11-08_20:16
-# cat @home_manual_latest 
-# @home_manual_snapshot_ro_2014-11-08_20:16
-# btrfs send $(cat @home_manual_latest) | btrfs receive /1t/
-# btrfs send $(cat @_manual_latest) | btrfs receive /1t/
-# cp @home_manual_latest /1t/@home_manual_last_time
-# cp @_manual_latest /1t/@_manual_last_time
 
 # incremental send
 function incremental_send() {

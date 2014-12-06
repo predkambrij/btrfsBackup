@@ -1,12 +1,4 @@
-# working daily weekly monthly
-# format
-# @
-# @_working_snapshot_ro_date
-# @home_loj_working_snapshot_ro_date
-# @home_loj_virtualbox_working_snapshot_ro_date
-
 # subvolume
-
 if [ "$1" == "@" ];then
     subvol="$1"
 elif [ "$1" == "@home" ];then

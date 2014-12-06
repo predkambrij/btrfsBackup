@@ -15,8 +15,32 @@ Scripts currently include hardcoded paths as they are done ad-hoc (quick & dirty
     sudo bash do_snapshot.sh @ manual
     sudo bash do_snapshot.sh @ daily # could be done with cron
     sudo bash do_snapshot.sh @ daily # could be done with cron
+    sudo bash do_snapshot.sh @home daily # could be done with cron
+    sudo bash do_snapshot.sh @home daily # could be done with cron
 
-    # send all manual snapshots for @home subvolume
+    # only at the first time of sending for each type (manual, daily, ...) and each subvolume (@, @home, ...)
+    # make file with snapshot name you will send manualy on destination disk (in example is mounted on /1t/)
+    # eg.
+    echo "@home_daily_snapshot_ro_2014-12-06_15:12" > /1t/@home_daily_last_time
+    sudo btrfs send $(cat /1t/@home_daily_last_time) | btrfs receive /1t/ # will take some time as it will send whole subvolume
+
+    # for a new type (manual, daily, ...) you can set parent of one recent snapshot which already exist on external drive and is not deleted on laptop's disk yet
+    # eg.
+    sudo btrfs send -p /ssd/@home_manual_snapshot_ro_2014-12-06_15:08 /ssd/$(cat /1t/@home_daily_last_time) | btrfs receive /1t/ # is much faster
+    
+    # after that, delete it from list that send_receive.sh won't try to send it again
+    sed -i -e "/$(cat /1t/@home_daily_last_time)/d" /ssd/@home_daily_list
+    
+    # all further sends can be done with following command
+    sudo bash send_receive.sh @home daily
+
+    # and delete them from laptop's disk if you wish
+    sudo bash delete_transfered.sh @home daily
+
+
+    # examples of command with another type or subvolume 
+
+    # send all manual snapshots for @home subvolume (which weren't sent yet)
     sudo bash send_receive.sh @home manual
 
     # send all manual snapshots for @ subvolume
