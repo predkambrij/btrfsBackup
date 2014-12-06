@@ -40,7 +40,7 @@ Scripts currently include hardcoded paths as they are done ad-hoc (quick & dirty
 
     # examples of command with another type or subvolume 
 
-    # send all manual snapshots for @home subvolume (which weren't sent yet)
+    # send all manual snapshots for @home subvolume (which aren't sent yet)
     sudo bash send_receive.sh @home manual
 
     # send all manual snapshots for @ subvolume
@@ -49,7 +49,7 @@ Scripts currently include hardcoded paths as they are done ad-hoc (quick & dirty
     # send all daily snapshots for @ subvolume
     sudo bash send_receive.sh @ daily
 
-    # delete all manual snapshots for @home subvolume which were sent (to external disk)
+    # delete all manual snapshots for @home subvolume which are sent (to external disk)
     sudo bash delete_transfered.sh @home manual
 
 
