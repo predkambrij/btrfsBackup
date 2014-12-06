@@ -1,0 +1,3 @@
+sudo bash do_snapshot.sh @home manual
+sudo bash send_receive.sh @home manual
+sudo bash delete_transfered.sh @home manual
