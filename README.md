@@ -1,5 +1,6 @@
 #What this project is about?
-bash scripts for doing, transfering and deleting snapshots of btrfs subvolumes
+Bash scripts for doing, transfering and deleting snapshots of btrfs subvolumes.
+
 It's useful if you have btrfs on your laptop and you want to have automated daily/weekly/monthly backups.
 From time to time when you're running out of free space you can send new snapshots to external (btrfs) HDD and delete transfered snapshots from laptop's disk.
 
