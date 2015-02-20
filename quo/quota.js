@@ -49,7 +49,10 @@ function _qgroup_show(btrfs_mount, id_name) {
     if (columns.length != 3) {
       continue;
     }
-    var subv_id = columns[0].substring(2);
+    var subv_id = columns[0].split("/");
+    if (subv_id.length < 2)
+      continue;
+    var subv_id = subv_id[subv_id.length-1];
     if (id_name.hasOwnProperty(subv_id)) {
       fin_lines.push(columns[0]+"\t"+columns[1]+"\t"+columns[2]+"\t"+id_name[subv_id]);
     }
