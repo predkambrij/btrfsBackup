@@ -1,0 +1,11 @@
+{
+  "name": "btrfs_quota",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "colors": "~1.0.3",
+    "commander": "~2.5.0",
+    "shelljs": "^0.3.0",
+    "tail": "~0.4.0"
+  }
+}
