@@ -70,6 +70,11 @@ program
   .option('-f, --filter [value]', 'Filter (grep) by subvolume names')
   .parse(process.argv);
 
+if (process.getuid() != 0) {
+  console.log("you must be root");
+  process.exit(1);
+}
+
 if (program.path == null) {
   console.log('argument -p is madatory');
   process.exit(1);
