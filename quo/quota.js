@@ -1,4 +1,5 @@
 var childProcess = require('child_process')
+var program = require('commander');
 //console.log(childProcess);
 
 // sudo btrfs quota enable /ssd
@@ -36,12 +37,16 @@ function _qgroup_show(btrfs_mount, id_name) {
   var command = "btrfs qgroup show  "+btrfs_mount+" | tail -n +3 | awk '\"'\"'{printf \"%s\\t%.2fG\\t%.2fG\\n\", $1, $2/1024/1024/1024, $3/1024/1024/1024}'\"'\"'";
   command = "script -c '"+command+"' /dev/null | grep -v 'Script started, file is /dev/null' | grep -v 'Script done, file is /dev/null'";
   p = childProcess.spawnSync("bash", ["-c", command], { encoding: 'utf8' });
-  // console.log(p.stdout);
-  // console.log(command);
+  // var h_command = "btrfs qgroup show  "+btrfs_mount+" | head -n 2";
+  // h_command = "script -c '"+h_command+"' /dev/null | grep -v 'Script started, file is /dev/null' | grep -v 'Script done, file is /dev/null'";
+  // p2 = childProcess.spawnSync("bash", ["-c", h_command], { encoding: 'utf8' });
+  //console.log(p.stdout);
+  //console.log(command);
 
   var fin_lines = [];
+  fin_lines.push("ID\tTOTAL\tUNSHD\tSUBVOL")
   var lines = p.stdout.split('\n');
-  for(var i = 0;i < lines.length;i++){
+  for(var i = 0; i < lines.length; i++){
     var columns = lines[i].split("\t");
     //console.log(columns);
     if (columns.length != 3) {
@@ -56,15 +61,25 @@ function _qgroup_show(btrfs_mount, id_name) {
 
 }
 
-var btrfs_mount = "/ssd"
-var btrfs_mount = "/1t"
-var filter = "subvolumes";
-var filter = null;
+
+program
+  .version('0.0.1')
+  .usage('[options]')
+
+  .option('-p, --path [value]', 'Path of mounted BTRFS filesystem')
+  .option('-f, --filter [value]', 'Filter (grep) by subvolume names')
+  .parse(process.argv);
+
+if (program.path == null) {
+  console.log('argument -p is madatory');
+  process.exit(1);
+}
+
+var btrfs_mount = program.path;
+var filter = program.filter;
+
 var id_name = _subv_list(btrfs_mount, filter);
 var qg_sh = _qgroup_show(btrfs_mount, id_name);
 
-//console.log(qg_sh);
 console.log(qg_sh.join("\n"));
-
-//console.log("end");
 
