@@ -37,9 +37,6 @@ function _qgroup_show(btrfs_mount, id_name) {
   var command = "btrfs qgroup show  "+btrfs_mount+" | tail -n +3 | awk '\"'\"'{printf \"%s\\t%.2fG\\t%.2fG\\n\", $1, $2/1024/1024/1024, $3/1024/1024/1024}'\"'\"'";
   command = "script -c '"+command+"' /dev/null | grep -v 'Script started, file is /dev/null' | grep -v 'Script done, file is /dev/null'";
   p = childProcess.spawnSync("bash", ["-c", command], { encoding: 'utf8' });
-  // var h_command = "btrfs qgroup show  "+btrfs_mount+" | head -n 2";
-  // h_command = "script -c '"+h_command+"' /dev/null | grep -v 'Script started, file is /dev/null' | grep -v 'Script done, file is /dev/null'";
-  // p2 = childProcess.spawnSync("bash", ["-c", h_command], { encoding: 'utf8' });
   //console.log(p.stdout);
   //console.log(command);
 
