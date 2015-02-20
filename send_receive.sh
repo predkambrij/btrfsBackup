@@ -23,8 +23,8 @@ else
 fi
 
 function verbose_btrfs() {
-    echo "$@ | btrfs receive /1t/"
-    $@ | btrfs receive /1t/
+    echo "$@ | btrfs receive /1t/think/"
+    $@ | btrfs receive /1t/think/
 }
 
 # go to the root of the filesystem
@@ -33,7 +33,7 @@ cd /ssd
 
 # incremental send
 function incremental_send() {
-    parent=/ssd/$(cat "/1t/"$subvol"_"$frequency"_last_time")
+    parent=/ssd/$(cat "/1t/think/"$subvol"_"$frequency"_last_time")
     #latest=/ssd/$(cat "/ssd/"$subvol"_"$frequency"_list"|head -n 1)
     latest=$1
     
@@ -51,8 +51,8 @@ function incremental_send() {
         exit 3
     else
         # last time rotate
-        mv "/1t/"$subvol"_"$frequency"_last_time" "/1t/"$subvol"_"$frequency"_last_time-bu"
-        cat "/ssd/"$subvol"_"$frequency"_list" | head -n 1 > "/1t/"$subvol"_"$frequency"_last_time"
+        mv "/1t/think/"$subvol"_"$frequency"_last_time" "/1t/think/"$subvol"_"$frequency"_last_time-bu"
+        cat "/ssd/"$subvol"_"$frequency"_list" | head -n 1 > "/1t/think/"$subvol"_"$frequency"_last_time"
         # remove first line of the list
         sed -i -e "1d" "/ssd/"$subvol"_"$frequency"_list"
         echo "$parent" >> "/ssd/"$subvol"_"$frequency"_toremove"
