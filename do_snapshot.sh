@@ -3,8 +3,10 @@ if [ "$1" == "@" ];then
     subvol="$1"
 elif [ "$1" == "@home" ];then
     subvol="$1"
+elif [ "$1" == "@opt_docker_volumes" ];then
+    subvol="$1"
 else
-    echo "@ or @home is valid"
+    echo "check entered subvolume"
     exit 1
 fi
 
@@ -29,7 +31,7 @@ function verbose_command() {
 cd /ssd
 
 # destination snapshot
-dest=$subvol"_"$frequency"_snapshot_ro_"$(date +%Y-%m-%d_%H:%M)
+dest="snps/@snp_ro_"$subvol"_"$frequency"_"$(date +%Y-%m-%d_%H:%M)
 
 
 verbose_command btrfs subvolume snapshot -r  $subvol $dest 
