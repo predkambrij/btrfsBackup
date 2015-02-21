@@ -35,8 +35,9 @@ dest="snps/@snp_ro_"$subvol"_"$frequency"_"$(date +%Y-%m-%d_%H:%M)
 
 
 verbose_command btrfs subvolume snapshot -r  $subvol $dest 
-if [ $? -ne 0 ];then
-    echo "failed"
+ex=$?
+if [ $ex -ne 0 ];then
+    echo "failed $ex"
     exit 3
 else
     # mark latest snapshot name
