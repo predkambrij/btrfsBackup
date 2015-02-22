@@ -10,4 +10,5 @@ cd /opt/btrfsBackup
 PATH=$PATH bash do_snapshot.sh @ daily
 PATH=$PATH bash do_snapshot.sh @home daily
 PATH=$PATH bash do_snapshot.sh @opt_docker_volumes daily
+sync
 

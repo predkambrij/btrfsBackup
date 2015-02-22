@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 var childProcess = require('child_process')
 var program = require('commander');
 //console.log(childProcess);

@@ -41,7 +41,7 @@ if [ $ex -ne 0 ];then
     exit 3
 else
     # mark latest snapshot name
-    echo $dest>>$subvol"_"$frequency"_list"
+    echo $dest>>"maint_snps/"$subvol"_list"
 fi
 sync
 
