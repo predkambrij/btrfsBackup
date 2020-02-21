@@ -1,55 +1,57 @@
-#What this project is about?
-Bash scripts for doing, transfering and deleting snapshots of btrfs subvolumes.
+## What is this project about?
 
-It's useful if you have btrfs on your laptop and you want to have automated daily/weekly/monthly backups.
-From time to time when you're running out of free space you can send new snapshots to external (btrfs) HDD and delete transfered snapshots from laptop's disk.
+Bash scripts for making, transfering and deleting snapshots of btrfs subvolumes.
 
-Scripts currently include hardcoded paths as they are done ad-hoc (quick & dirty)
+It's useful if you have btrfs on your computer and you want to make regular snapshots and transfer all of them later to external btrfs storage (and after that delete them from your computer).
 
-#examples
+First time setup: copy config.sample.sh to config.sh and set the variables.
 
-    # do some snapshots
-    sudo bash do_snapshot.sh @home manual
-    sudo bash do_snapshot.sh @ manual
-    sudo bash do_snapshot.sh @home manual
-    sudo bash do_snapshot.sh @ manual
-    sudo bash do_snapshot.sh @ daily # could be done with cron
-    sudo bash do_snapshot.sh @ daily # could be done with cron
-    sudo bash do_snapshot.sh @home daily # could be done with cron
-    sudo bash do_snapshot.sh @home daily # could be done with cron
+## EXAMPLES
 
-    # only at the first time of sending for each type (manual, daily, ...) and each subvolume (@, @home, ...)
-    # make file with snapshot name you will send manualy on destination disk (in example is mounted on /1t/)
-    # eg.
-    echo "@home_daily_snapshot_ro_2014-12-06_15:12" > /1t/@home_daily_last_time
-    sudo btrfs send $(cat /1t/@home_daily_last_time) | btrfs receive /1t/ # will take some time as it will send whole subvolume
+### CREATE SNAPSHOTS (for all subvolumes or for desired one)
 
-    # for a new type (manual, daily, ...) you can set parent of one recent snapshot which already exist on external drive and is not deleted on laptop's disk yet
-    # eg.
-    sudo btrfs send -p /ssd/@home_manual_snapshot_ro_2014-12-06_15:08 /ssd/$(cat /1t/@home_daily_last_time) | btrfs receive /1t/ # is much faster
-    
-    # after that, delete it from list that send_receive.sh won't try to send it again
-    sed -i -e "/$(cat /1t/@home_daily_last_time)/d" /ssd/@home_daily_list
-    
-    # all further sends can be done with following command
-    sudo bash send_receive.sh @home daily
+    # ./backup.sh doSnapshotForAllSubvolumes
+    btrfs subvolume snapshot -r /btrfs/@test1 /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34
+    Create a readonly snapshot of '/btrfs/@test1' in '/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34'
+    btrfs subvolume snapshot -r /btrfs/@test2 /btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:34
+    Create a readonly snapshot of '/btrfs/@test2' in '/btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:34'
 
-    # and delete them from laptop's disk if you wish
-    sudo bash delete_transfered.sh @home daily
+    # ./backup.sh doSnapshot @test1
+    btrfs subvolume snapshot -r /btrfs/@test1 /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:37
+    Create a readonly snapshot of '/btrfs/@test1' in '/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:37'
 
+### SEND CREATED SNAPSHOTS TO EXTERNAL BTRFS STORAGE
 
-    # examples of command with another type or subvolume 
+    # ./backup.sh sendLocalAll
+    subvolume: @test1 snapshots: 2
+    snapshot /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34
+    parent:/btrfs/snps/@snp_ro_@test1_pf2_2020-02-22_23:17 snapshotPath:/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34
+    bash -c btrfs send -p "/btrfs/snps/@snp_ro_@test1_pf2_2020-02-22_23:17" "/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34" | btrfs receive "/btrfsbackup/kista/"
+    At subvol /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34
+    At snapshot @snp_ro_@test1_pf1_2020-02-22_23:34
+    snapshot /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:37
+    parent:/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34 snapshotPath:/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:37
+    bash -c btrfs send -p "/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34" "/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:37" | btrfs receive "/btrfsbackup/kista/"
+    At subvol /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:37
+    At snapshot @snp_ro_@test1_pf1_2020-02-22_23:37
+    subvolume: @test2 snapshots: 1
+    snapshot /btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:34
+    parent:/btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:04 snapshotPath:/btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:34
+    bash -c btrfs send -p "/btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:04" "/btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:34" | btrfs receive "/btrfsbackup/kista/"
+    At subvol /btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:34
+    At snapshot @snp_ro_@test2_pf1_2020-02-22_23:34
 
-    # send all manual snapshots for @home subvolume (which aren't sent yet)
-    sudo bash send_receive.sh @home manual
+### DELETE (transfered) SNAPSHOTS FROM COMPUTER
 
-    # send all manual snapshots for @ subvolume
-    sudo bash send_receive.sh @ manual
-
-    # send all daily snapshots for @ subvolume
-    sudo bash send_receive.sh @ daily
-
-    # delete all manual snapshots for @home subvolume which are sent (to external disk)
-    sudo bash delete_transfered.sh @home manual
-
-
+    # ./backup.sh deleteTransferedAll
+    subvolume: @test1 snapshots:2
+    snapshot /btrfs/snps/@snp_ro_@test1_pf2_2020-02-22_23:17
+    btrfs subvolume delete /btrfs/snps/@snp_ro_@test1_pf2_2020-02-22_23:17
+    Delete subvolume (no-commit): '/btrfs/snps/@snp_ro_@test1_pf2_2020-02-22_23:17'
+    snapshot /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34
+    btrfs subvolume delete /btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34
+    Delete subvolume (no-commit): '/btrfs/snps/@snp_ro_@test1_pf1_2020-02-22_23:34'
+    subvolume: @test2 snapshots:1
+    snapshot /btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:04
+    btrfs subvolume delete /btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:04
+    Delete subvolume (no-commit): '/btrfs/snps/@snp_ro_@test2_pf1_2020-02-22_23:04'

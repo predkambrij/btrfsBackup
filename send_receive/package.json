@@ -1,0 +1,19 @@
+{
+  "name": "send_receive",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "colors": "~1.0.3",
+    "commander": "~2.5.0",
+    "mute-stream": "0.0.4",
+    "node-stream-responder": "^0.1.4",
+    "read": "^1.0.5",
+    "readline-sync": "^0.6.1",
+    "respond": "^0.9.0",
+    "shelljs": "^0.3.0",
+    "stream-expect": "^0.1.0",
+    "suppose": "^0.3.0",
+    "tail": "~0.4.0",
+    "util": "^0.10.3"
+  }
+}

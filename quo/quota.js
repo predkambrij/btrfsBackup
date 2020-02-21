@@ -35,7 +35,7 @@ function _subv_list(btrfs_mount, filter) {
 }
 
 function _qgroup_show(btrfs_mount, id_name) {
-  var command = "btrfs qgroup show  "+btrfs_mount+" | tail -n +3 | awk '\"'\"'{printf \"%s\\t%.2fG\\t%.2fG\\n\", $1, $2/1024/1024/1024, $3/1024/1024/1024}'\"'\"'";
+  var command = "btrfs qgroup show  "+btrfs_mount+" | tail -n +3 | awk '\"'\"'{printf \"%s\\t%s\\t%s\\n\", $1, $2, $3}'\"'\"'";
   command = "script -c '"+command+"' /dev/null | grep -v 'Script started, file is /dev/null' | grep -v 'Script done, file is /dev/null'";
   p = childProcess.spawnSync("bash", ["-c", command], { encoding: 'utf8' });
   //console.log(p.stdout);
