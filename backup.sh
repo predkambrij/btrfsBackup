@@ -91,7 +91,7 @@ function _initLocalSending() {
         exit 1
     fi
 
-    runCommand btrfs send "$subvolpath" | runCommand btrfs receive "${BTRFSBACKUP_DIR}"
+    runCommandVerbose bash -c "btrfs send \"$subvolpath\" | btrfs receive \"${BTRFSBACKUP_DIR}\""
     sync
 
     runCommandVerbose touch "${BTRFS_MAINT}${subvolname}_toremove"
