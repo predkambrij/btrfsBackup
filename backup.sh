@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/conf.sh"
+. "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/${BTRFSBACKUP_CONF_FILE:-conf.sh}"
 . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/helpers.sh"
 
 function doSnapshotForAllSubvolumes() {
