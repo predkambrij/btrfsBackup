@@ -4,7 +4,7 @@
 . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/helpers.sh"
 
 function doSnapshotForAllSubvolumes() {
-    localChecks
+    localChecks "$FUNCNAME"
     local postfix="$1"
 
     for subvolname in ${SUBVOLUME_LIST}; do
@@ -14,7 +14,7 @@ function doSnapshotForAllSubvolumes() {
 
 function doSnapshot() {
     local subvolname="$1"
-    localChecks "$subvolname"
+    localChecks "$FUNCNAME" "$subvolname"
 
     local postfix="$2"
     if [ -z "${postfix}" ]; then
@@ -35,7 +35,7 @@ function doSnapshot() {
 }
 
 function sendLocalAll() {
-    localChecks
+    localChecks "$FUNCNAME"
     for subvolname in ${SUBVOLUME_LIST}; do
         local subvollistfile="${BTRFS_MAINT}${subvolname}_list"
         if ! [ -f "${subvollistfile}" ]; then
@@ -100,7 +100,7 @@ function _initLocalSending() {
 }
 
 function deleteTransferedAll() {
-    localChecks
+    localChecks "$FUNCNAME"
     for subvolname in ${SUBVOLUME_LIST}; do
         local toremoveLocation="${BTRFS_MAINT}${subvolname}_toremove"
         echo "subvolume: ${subvolname} snapshots:"$(cat "$toremoveLocation" | wc -l)

@@ -13,6 +13,16 @@ function runCommand() {
     fi
 }
 
+# localChecks
+# Performs various system and environment checks before executing backup operations
+#
+# Parameters:
+#   $1 - Caller's function name
+#   $2 - Subvolume name to validate against SUBVOLUME_LIST
+#
+# Side effects:
+#   - Creates BTRFS_SNPS directory if it doesn't exist
+#   - Creates BTRFS_MAINT directory if it doesn't exist
 function localChecks() {
     if [[ $EUID -ne 0 ]]; then
         echo "This script must be run as root" 1>&2
@@ -24,10 +34,10 @@ function localChecks() {
         exit 1
     fi
 
-    if ! [ -z "$1" ]; then
+    if ! [ -z "$2" ]; then
         # check if given subvolume is on the list
-        if ! [[ " $SUBVOLUME_LIST " =~ " $1 " ]]; then
-            echo "subvolume $1 isn't on SUBVOLUME_LIST!"
+        if ! [[ " $SUBVOLUME_LIST " =~ " $2 " ]]; then
+            echo "subvolume $2 isn't on SUBVOLUME_LIST!"
             exit 1
         fi
     fi
@@ -42,9 +52,12 @@ function localChecks() {
         exit 1
     fi
 
-    if ! mountpoint -q "${BTRFSBACKUP_ROOT}"; then
-        echo "make sure that BTRFSBACKUP_ROOT is mounted at ${BTRFSBACKUP_ROOT}"
-        exit 1
+    # BTRFSBACKUP_ROOT doesn't need to be mounted when making snapshots
+    if ! [[ " doSnapshot doSnapshotForAllSubvolumes " =~ " $1 " ]]; then
+        if ! mountpoint -q "${BTRFSBACKUP_ROOT}"; then
+            echo "make sure that BTRFSBACKUP_ROOT is mounted at ${BTRFSBACKUP_ROOT}"
+            exit 1
+        fi
     fi
 
     if ! [ -d "${BTRFS_SNPS}" ]; then
